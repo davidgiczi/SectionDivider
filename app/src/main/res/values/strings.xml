@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">MyFirstApplication</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">Szakasz részekre osztása</string>
+    <string name="second_fragment_label">Számított eredmények</string>
+    <string name="count">Számol</string>
+    <string name="exit">Kilépés</string>
+    <string name="previous">Vissza</string>
+    <string name="y_coordinate_text">Y=</string>
+    <string name="x_coordinate_text">X=</string>
+    <string name="start_point_text">Kezdőpont:</string>
+    <string name="end_point_text">Végpont:</string>
+    <string name="metric">m</string>
+    <string name="pcs">db</string>
+    <string name="number_of_divider_points_text">Az osztópontok száma:</string>
+    <string name="length_of_section">A szakasz hossza:</string>
+    <string name="distance_between_points_text">A pontok közti távolság:</string>
+    <string name="start_y_coord_field_is_empty_msg">A kezdőpont Y koordinátájának megadása szükséges.</string>
+    <string name="start_x_coord_field_is_empty_msg">A kezdőpont X koordinátájának megadása szükséges.</string>
+    <string name="end_y_coord_field_is_empty_msg">A végpont Y koordinátájának megadása szükséges.</string>
+    <string name="end_x_coord_field_is_empty_msg">A végpont X koordinátájának megadása szükséges.</string>
+    <string name="divider_points_coordinates">Az osztópontok koordinátái:</string>
+    <string name="divider_point_coordinate">Az osztópont koordinátája:</string>
+    <string name="lorem_ipsum"></string>
+</resources>
