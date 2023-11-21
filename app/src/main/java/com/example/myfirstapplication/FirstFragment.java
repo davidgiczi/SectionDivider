@@ -40,9 +40,11 @@ public class FirstFragment extends Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(binding.startYInputField.getText().toString().length() > 3 ){
                     binding.endYInputField.setText(binding.startYInputField.getText().toString().substring(0, 3));
+                    binding.outsideYField.setText(binding.startYInputField.getText().toString().substring(0, 3));
                 }
                 else if(binding.startYInputField.getText().toString().length() < 3 ){
                     binding.endYInputField.setText("");
+                    binding.outsideYField.setText("");
                 }
 
             }
@@ -62,9 +64,11 @@ public class FirstFragment extends Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(binding.startXInputField.getText().toString().length() > 3 ){
                     binding.endXInputField.setText(binding.startXInputField.getText().toString().substring(0, 3));
+                    binding.outsideXField.setText(binding.startXInputField.getText().toString().substring(0, 3));
                 }
                 else if(binding.startXInputField.getText().toString().length() < 3 ){
                     binding.endXInputField.setText("");
+                    binding.outsideXField.setText("");
                 }
             }
             @Override
@@ -115,13 +119,23 @@ public class FirstFragment extends Fragment {
                 Point endPoint = new Point("Végpont:",
                         Double.parseDouble(binding.endYInputField.getText().toString()),
                         Double.parseDouble(binding.endXInputField.getText().toString()));
+                Point outsiderPoint = null;
                 int numberOfDividerPoints =
                         Integer.parseInt(binding.numberOfDividerPointsInputField.getText().toString());
                 Calculator calc = new Calculator(startPoint,endPoint, numberOfDividerPoints);
+                if( !binding.outsideYField.getText().toString().isEmpty() ||
+                        !binding.outsideXField.getText().toString().isEmpty() ){
+                    outsiderPoint  = new Point("Outsider",
+                            Double.parseDouble(binding.outsideYField.getText().toString()),
+                            Double.parseDouble(binding.outsideXField.getText().toString()));
+                }
+                calc.setOutsiderPoint(outsiderPoint);
                 Bundle resultData = new Bundle();
                 resultData.putString("length", calc.getLengthOfSection());
                 resultData.putString("distance", calc.getDistanceBetweenPoints());
                 resultData.putStringArrayList("dividers", calc.getDividerPointsAsString());
+                resultData.putString("dividerValue", binding.numberOfDividerPointsInputField.getText().toString());
+                resultData.putString("insider", calc.calcPointInsideSection().toString());
                 getParentFragmentManager().setFragmentResult("results", resultData);
                 NavHostFragment.findNavController(FirstFragment.this)
                        .navigate(R.id.action_FirstFragment_to_SecondFragment);

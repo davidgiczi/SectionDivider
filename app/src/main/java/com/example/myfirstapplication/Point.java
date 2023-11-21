@@ -30,10 +30,10 @@ public class Point  {
 
     @Override
     public String toString() {
-        return String.format("%15s", pointID) + " "
-                + String.format("%15.3f", y_value)
-                .replace(',', '.') + " "
-                + String.format("%14.3f", x_value)
+        return    String.format("%13s",  pointID)
+                + String.format("%13.3f",  y_value)
+                .replace(',', '.')
+                + String.format("%13.3f", x_value)
                 .replace(',', '.');
     }
 

@@ -31,11 +31,15 @@ public class SecondFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("results", this, (requestKey, result) -> {
         binding.lengthOfSection.setText(Objects.requireNonNull(result.get("length")).toString());
         binding.distanceBetweenPoints.setText(Objects.requireNonNull(result.get("distance")).toString());
-        if(result.getStringArrayList("dividers").size() == 1){
-            binding.dividerPointData.setText(R.string.divider_point_coordinate);
+
+        if(result.get("dividerValue").toString().equals("0") || result.getStringArrayList("dividers").isEmpty()){
+            binding.dividerPointDataText.setText("");
+        }
+        else if(result.getStringArrayList("dividers").size() == 1){
+            binding.dividerPointDataText.setText(R.string.divider_point_coordinate);
         }
         else {
-            binding.dividerPointData.setText(R.string.divider_points_coordinates);
+            binding.dividerPointDataText.setText(R.string.divider_points_coordinates);
         }
         StringBuilder sb = new StringBuilder();
         for (String divider : result.getStringArrayList("dividers")) {
@@ -43,6 +47,7 @@ public class SecondFragment extends Fragment {
             sb.append("\n\n");
         }
         binding.dividerPointsData.setText(sb.toString());
+        binding.insidePointData.setText(result.get("insider").toString());
         });
     }
 

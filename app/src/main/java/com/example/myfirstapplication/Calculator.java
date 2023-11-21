@@ -2,12 +2,12 @@ package com.example.myfirstapplication;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Calculator {
 
-    private Point startPoint;
-    private Point endPoint;
+    private final Point startPoint;
+    private final Point endPoint;
+    private Point outsiderPoint;
     private int numberOfDividerPoints;
     private String lengthOfSection;
     private String distanceBetweenPoints;
@@ -18,8 +18,10 @@ public class Calculator {
         this.endPoint = endPoint;
         this.numberOfDividerPoints = numberOfDividerPoints;
         this.resultPoints = new ArrayList<>();
-        lengthOfSection = String.format("%.3fm", calcDistance()).replace(',', '.');
-        distanceBetweenPoints = String.format("%.3fm", calcDistance() / (numberOfDividerPoints + 1))
+        lengthOfSection = String.format("%.3fm", calcDistance(startPoint, endPoint))
+                .replace(',', '.');
+        distanceBetweenPoints =
+                String.format("%.3fm", calcDistance(startPoint, endPoint) / (numberOfDividerPoints + 1))
                 .replace(',', '.');
         calcResultPoints();
     }
@@ -44,11 +46,18 @@ public class Calculator {
         return resultPoints;
     }
 
-    private double calcDistance(){
+    public Point getOutsiderPoint() {
+        return outsiderPoint;
+    }
+    public void setOutsiderPoint(Point outsiderPoint) {
+        this.outsiderPoint = outsiderPoint;
+    }
+
+    private double calcDistance(Point startPoint, Point endPoint){
         return Math.sqrt(Math.pow(startPoint.getY_value() - endPoint.getY_value(), 2) +
                          Math.pow(startPoint.getX_value() - endPoint.getX_value(), 2));
     }
-    private double calcAzimuth(){
+    private Double calcAzimuth(Point startPoint, Point endPoint){
 
         double deltaX = endPoint.getY_value() - startPoint.getY_value();
         double deltaY = endPoint.getX_value() - startPoint.getX_value();
@@ -75,19 +84,42 @@ public class Calculator {
     }
 
     private void calcResultPoints(){
-        double distance = calcDistance() / (numberOfDividerPoints + 1);
-       for (int i = 0; i < numberOfDividerPoints; i++){
+        double distance = calcDistance(startPoint, endPoint) / (numberOfDividerPoints + 1);
+       for (int i = 0; i < numberOfDividerPoints; i ++){
+           if( calcAzimuth(startPoint, endPoint).isNaN() ){
+               continue;
+           }
            Point point = new Point(String.valueOf(i + 1),
-                   startPoint.getY_value() + (i + 1) * distance * Math.sin(calcAzimuth()),
-                   startPoint.getX_value() + (i + 1) * distance * Math.cos(calcAzimuth()));
-           resultPoints.add(point);
+                   startPoint.getY_value() + (i + 1) * distance * Math.sin(calcAzimuth(startPoint, endPoint)),
+                   startPoint.getX_value() + (i + 1) * distance * Math.cos(calcAzimuth(startPoint, endPoint)));
+               resultPoints.add(point);
        }
     }
 
     public ArrayList<String> getDividerPointsAsString(){
-        return resultPoints.stream()
-                .map(p -> p.toString())
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<String> resultAsString = new ArrayList<>();
+        for (Point point : resultPoints) {
+            resultAsString.add(point.toString());
+        };
+        return resultAsString;
+    }
+
+    public Point calcPointInsideSection(){
+        Point insidePoint = new Point(String.valueOf(resultPoints.size() + 1), 0.0, 0.0);
+        if( outsiderPoint == null || calcAzimuth(startPoint, endPoint).isNaN()){
+            return insidePoint;
+        }
+        double alfa= calcAzimuth(startPoint, endPoint) >
+                calcAzimuth(startPoint, outsiderPoint) ?
+                calcAzimuth(startPoint, endPoint) -
+                        calcAzimuth(startPoint, outsiderPoint) :
+                calcAzimuth(startPoint, outsiderPoint) -
+                calcAzimuth(startPoint, endPoint);
+        double distance = calcDistance(startPoint, outsiderPoint) * Math.cos(alfa);
+        insidePoint  = new Point(String.valueOf(resultPoints.size() + 1),
+                startPoint.getY_value() + distance * Math.sin(calcAzimuth(startPoint, endPoint)),
+                startPoint.getX_value() + distance * Math.cos(calcAzimuth(startPoint, endPoint)));
+        return insidePoint;
     }
 
 }

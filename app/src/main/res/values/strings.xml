@@ -22,5 +22,6 @@
     <string name="end_x_coord_field_is_empty_msg">A végpont X koordinátájának megadása szükséges.</string>
     <string name="divider_points_coordinates">Az osztópontok koordinátái:</string>
     <string name="divider_point_coordinate">Az osztópont koordinátája:</string>
+    <string name="outsider_point_text">Külső pont koordinátája:</string>
     <string name="lorem_ipsum"></string>
 </resources>
