@@ -106,15 +106,12 @@ public class Calculator {
 
     public Point calcPointInsideSection(){
         Point insidePoint = new Point(String.valueOf(resultPoints.size() + 1), 0.0, 0.0);
-        if( outsiderPoint == null || calcAzimuth(startPoint, endPoint).isNaN()){
+        if( outsiderPoint == null ||
+                calcAzimuth(startPoint, endPoint).isNaN() ||
+                         calcAzimuth(startPoint, outsiderPoint).isNaN() ){
             return insidePoint;
         }
-        double alfa= calcAzimuth(startPoint, endPoint) >
-                calcAzimuth(startPoint, outsiderPoint) ?
-                calcAzimuth(startPoint, endPoint) -
-                        calcAzimuth(startPoint, outsiderPoint) :
-                calcAzimuth(startPoint, outsiderPoint) -
-                calcAzimuth(startPoint, endPoint);
+        double alfa = calcAzimuth(startPoint, endPoint) - calcAzimuth(startPoint, outsiderPoint);
         double distance = calcDistance(startPoint, outsiderPoint) * Math.cos(alfa);
         insidePoint  = new Point(String.valueOf(resultPoints.size() + 1),
                 startPoint.getY_value() + distance * Math.sin(calcAzimuth(startPoint, endPoint)),
