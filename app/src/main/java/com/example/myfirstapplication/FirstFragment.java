@@ -123,7 +123,7 @@ public class FirstFragment extends Fragment {
                 int numberOfDividerPoints =
                         Integer.parseInt(binding.numberOfDividerPointsInputField.getText().toString());
                 Calculator calc = new Calculator(startPoint,endPoint, numberOfDividerPoints);
-                if( !binding.outsideYField.getText().toString().isEmpty() ||
+                if( !binding.outsideYField.getText().toString().isEmpty() &&
                         !binding.outsideXField.getText().toString().isEmpty() ){
                     outsiderPoint  = new Point("Outsider",
                             Double.parseDouble(binding.outsideYField.getText().toString()),
