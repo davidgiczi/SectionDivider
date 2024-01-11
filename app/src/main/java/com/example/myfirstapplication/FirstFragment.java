@@ -136,6 +136,7 @@ public class FirstFragment extends Fragment {
                 resultData.putStringArrayList("dividers", calc.getDividerPointsAsString());
                 resultData.putString("dividerValue", binding.numberOfDividerPointsInputField.getText().toString());
                 resultData.putString("insider", calc.calcPointInsideSection().toString());
+                resultData.putString("outsider_insider_distance", calc.getDistanceBetweenOutsiderAndInsiderPoints());
                 getParentFragmentManager().setFragmentResult("results", resultData);
                 NavHostFragment.findNavController(FirstFragment.this)
                        .navigate(R.id.action_FirstFragment_to_SecondFragment);

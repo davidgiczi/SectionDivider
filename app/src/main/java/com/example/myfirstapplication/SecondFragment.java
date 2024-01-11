@@ -48,6 +48,7 @@ public class SecondFragment extends Fragment {
         }
         binding.dividerPointsData.setText(sb.toString());
         binding.insidePointData.setText(result.get("insider").toString());
+        binding.outsiderInsiderDistance.setText(result.get("outsider_insider_distance").toString());
         });
     }
 

@@ -119,4 +119,10 @@ public class Calculator {
         return insidePoint;
     }
 
+    public String getDistanceBetweenOutsiderAndInsiderPoints(){
+        return "[" + String.format("%.3fm",
+                calcDistance(outsiderPoint, calcPointInsideSection()))
+                .replace(",", ".") + "]";
+    }
+
 }
