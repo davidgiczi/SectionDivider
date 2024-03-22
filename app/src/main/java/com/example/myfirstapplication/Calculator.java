@@ -74,10 +74,10 @@ public class Calculator {
         else if( 0 >= deltaX && deltaY > 0 ) {
             return 2 * Math.PI - Math.atan(Math.abs(deltaX) / deltaY);
         }
-        else if( deltaX > 0 && deltaY == 0 ) {
+        else if(deltaX > 0) {
             return Math.PI / 2;
         }
-        else if( 0 > deltaX && deltaY == 0 ) {
+        else if(0 > deltaX) {
             return 3 * Math.PI / 2;
         }
         return Double.NaN;
@@ -105,21 +105,19 @@ public class Calculator {
     }
 
     public Point calcPointInsideSection(){
-        Point insidePoint = new Point(String.valueOf(resultPoints.size() + 1), 0.0, 0.0);
-        if( outsiderPoint == null ||
-                calcAzimuth(startPoint, endPoint).isNaN() ||
+        if(outsiderPoint == null || calcAzimuth(startPoint, endPoint).isNaN() ||
                          calcAzimuth(startPoint, outsiderPoint).isNaN() ){
-            return insidePoint;
+           return null;
         }
         double alfa = calcAzimuth(startPoint, endPoint) - calcAzimuth(startPoint, outsiderPoint);
         double distance = calcDistance(startPoint, outsiderPoint) * Math.cos(alfa);
-        insidePoint  = new Point(String.valueOf(resultPoints.size() + 1),
+        return new Point(String.valueOf(resultPoints.size() + 1),
                 startPoint.getY_value() + distance * Math.sin(calcAzimuth(startPoint, endPoint)),
                 startPoint.getX_value() + distance * Math.cos(calcAzimuth(startPoint, endPoint)));
-        return insidePoint;
     }
 
     public String getDistanceBetweenOutsiderAndInsiderPoints(){
+        System.out.println(calcPointInsideSection());
         return "[" + String.format("%.3fm",
                 calcDistance(outsiderPoint, calcPointInsideSection()))
                 .replace(",", ".") + "]";

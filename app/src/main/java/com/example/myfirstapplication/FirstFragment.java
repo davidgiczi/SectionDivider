@@ -128,15 +128,17 @@ public class FirstFragment extends Fragment {
                     outsiderPoint  = new Point("Outsider",
                             Double.parseDouble(binding.outsideYField.getText().toString()),
                             Double.parseDouble(binding.outsideXField.getText().toString()));
+                    calc.setOutsiderPoint(outsiderPoint);
                 }
-                calc.setOutsiderPoint(outsiderPoint);
                 Bundle resultData = new Bundle();
                 resultData.putString("length", calc.getLengthOfSection());
                 resultData.putString("distance", calc.getDistanceBetweenPoints());
                 resultData.putStringArrayList("dividers", calc.getDividerPointsAsString());
                 resultData.putString("dividerValue", binding.numberOfDividerPointsInputField.getText().toString());
-                resultData.putString("insider", calc.calcPointInsideSection().toString());
-                resultData.putString("outsider_insider_distance", calc.getDistanceBetweenOutsiderAndInsiderPoints());
+                if( calc.calcPointInsideSection() != null){
+                    resultData.putString("insider", calc.calcPointInsideSection().toString());
+                    resultData.putString("outsider_insider_distance", calc.getDistanceBetweenOutsiderAndInsiderPoints());
+                }
                 getParentFragmentManager().setFragmentResult("results", resultData);
                 NavHostFragment.findNavController(FirstFragment.this)
                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
