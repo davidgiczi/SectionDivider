@@ -137,7 +137,12 @@ public class FirstFragment extends Fragment {
                 resultData.putString("dividerValue", binding.numberOfDividerPointsInputField.getText().toString());
                 if( calc.calcPointInsideSection() != null){
                     resultData.putString("insider", calc.calcPointInsideSection().toString());
-                    resultData.putString("outsider_insider_distance", calc.getDistanceBetweenOutsiderAndInsiderPoints());
+                    resultData.putString("abscissa", calc.getAbscissa());
+                    resultData.putString("ordinate", calc.getOrdinate());
+                    resultData.putString("abscissaError", calc.getAbscissaErrorMargin());
+                    resultData.putString("ordinateError", calc.getOrdinateErrorMargin());
+                    resultData.putBoolean("isOkAbscissa", calc.isOkAbscissaValue());
+                    resultData.putBoolean("isOkOrdinate", calc.isOkOrdinateValue());
                 }
                 getParentFragmentManager().setFragmentResult("results", resultData);
                 NavHostFragment.findNavController(FirstFragment.this)

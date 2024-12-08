@@ -113,13 +113,11 @@
             app:layout_constraintTop_toBottomOf="@+id/divider_points_data" />
 
         <TextView
-            android:id="@+id/outsider_insider_distance"
+            android:id="@+id/abscissa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:fontFamily="serif"
-            android:textColor="@color/green"
             android:textIsSelectable="true"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -127,6 +125,19 @@
             app:layout_constraintHorizontal_bias="0.493"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inside_point_data" />
+
+        <TextView
+            android:id="@+id/ordinate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="serif"
+            android:textIsSelectable="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/abscissa" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

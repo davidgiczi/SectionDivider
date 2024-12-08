@@ -1,7 +1,10 @@
 package com.example.myfirstapplication;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class Calculator {
 
@@ -12,6 +15,7 @@ public class Calculator {
     private String lengthOfSection;
     private String distanceBetweenPoints;
     private List<Point> resultPoints;
+    private  DecimalFormat df = new DecimalFormat("0.0");
 
     public Calculator(Point startPoint, Point endPoint, int numberOfDividerPoints) {
         this.startPoint = startPoint;
@@ -116,11 +120,35 @@ public class Calculator {
                 startPoint.getX_value() + distance * Math.cos(calcAzimuth(startPoint, endPoint)));
     }
 
-    public String getDistanceBetweenOutsiderAndInsiderPoints(){
-        System.out.println(calcPointInsideSection());
-        return "[" + String.format("%.3fm",
+    public String getOrdinate(){
+        return "Merőlegesen: " + (calcAzimuth(startPoint, endPoint) > calcAzimuth(startPoint, outsiderPoint) ?
+                "+" : "-") +  String.format(Locale.getDefault(),"%.3fm",
                 calcDistance(outsiderPoint, calcPointInsideSection()))
-                .replace(",", ".") + "]";
+                .replace(",", ".");
+    }
+    public String getAbscissa(){
+        return "Vonalban: " + (Objects.equals(calcAzimuth(startPoint, endPoint), calcAzimuth(startPoint, calcPointInsideSection())) ?
+                "+" : "-") + String.format(Locale.getDefault(),"%.3fm",
+                 calcDistance(startPoint, calcPointInsideSection()))
+                .replace(",", ".");
     }
 
+    public String getAbscissaErrorMargin(){
+        double lengthOfMainLine = calcDistance(startPoint, endPoint);
+        return "|" + df.format(lengthOfMainLine / 4.0).replace("," , ".") + "cm|";
+    }
+    public String getOrdinateErrorMargin(){
+        double lengthOfMainLine = calcDistance(startPoint, endPoint);
+        return "|" + df.format(3 * lengthOfMainLine / 10).replace(",", ".") + "cm|";
+    }
+
+    public boolean isOkAbscissaValue(){
+        double lengthOfMainLine = calcDistance(startPoint, endPoint);
+        return 2.5 * lengthOfMainLine / 1000 >= calcDistance(startPoint, calcPointInsideSection()) ;
+    }
+
+    public boolean isOkOrdinateValue(){
+        double lengthOfMainLine = calcDistance(startPoint, endPoint);
+        return 3 * lengthOfMainLine / 1000 >= calcDistance(outsiderPoint, calcPointInsideSection());
+    }
 }

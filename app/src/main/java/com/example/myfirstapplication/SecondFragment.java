@@ -1,5 +1,6 @@
 package com.example.myfirstapplication;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +52,22 @@ public class SecondFragment extends Fragment {
             return;
         }
         binding.insidePointData.setText(result.get("insider").toString());
-        binding.outsiderInsiderDistance.setText(result.get("outsider_insider_distance").toString());
+        if( (boolean) result.get("isOkAbscissa") ){
+            binding.abscissa.setTextColor(Color.parseColor("#3BB143"));
+        }
+        else{
+            binding.abscissa.setTextColor(Color.RED);
+        }
+        String abscissaData = result.get("abscissa") + " " + result.get("abscissaError");
+        binding.abscissa.setText(abscissaData);
+        if( (boolean) result.get("isOkOrdinate") ){
+            binding.ordinate.setTextColor(Color.parseColor("#3BB143"));
+        }
+        else{
+            binding.ordinate.setTextColor(Color.RED);
+        }
+        String ordinateData = result.get("ordinate") + " " + result.get("ordinateError");
+        binding.ordinate.setText(ordinateData);
         });
     }
 
