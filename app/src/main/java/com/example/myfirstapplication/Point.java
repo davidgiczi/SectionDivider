@@ -7,9 +7,9 @@ import androidx.annotation.NonNull;
 
 public class Point  {
 
-    private String pointID;
-    private double y_value;
-    private double x_value;
+    private final String pointID;
+    private final double y_value;
+    private final double x_value;
 
     public Point(String pointID, double y_value, double x_value) {
         this.pointID = pointID;

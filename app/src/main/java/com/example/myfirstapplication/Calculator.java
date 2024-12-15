@@ -11,21 +11,21 @@ public class Calculator {
     private final Point startPoint;
     private final Point endPoint;
     private Point outsiderPoint;
-    private int numberOfDividerPoints;
-    private String lengthOfSection;
-    private String distanceBetweenPoints;
-    private List<Point> resultPoints;
-    private  DecimalFormat df = new DecimalFormat("0.0");
+    private final int numberOfDividerPoints;
+    private final String lengthOfSection;
+    private final String distanceBetweenPoints;
+    private final List<Point> resultPoints;
+    private final DecimalFormat df = new DecimalFormat("0.0");
 
     public Calculator(Point startPoint, Point endPoint, int numberOfDividerPoints) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.numberOfDividerPoints = numberOfDividerPoints;
         this.resultPoints = new ArrayList<>();
-        lengthOfSection = String.format("%.3fm", calcDistance(startPoint, endPoint))
+        lengthOfSection = String.format(Locale.getDefault() ,"%.3fm", calcDistance(startPoint, endPoint))
                 .replace(',', '.');
         distanceBetweenPoints =
-                String.format("%.3fm", calcDistance(startPoint, endPoint) / (numberOfDividerPoints + 1))
+                String.format(Locale.getDefault(),"%.3fm", calcDistance(startPoint, endPoint) / (numberOfDividerPoints + 1))
                 .replace(',', '.');
         calcResultPoints();
     }
@@ -104,7 +104,7 @@ public class Calculator {
         ArrayList<String> resultAsString = new ArrayList<>();
         for (Point point : resultPoints) {
             resultAsString.add(point.toString());
-        };
+        }
         return resultAsString;
     }
 
@@ -121,15 +121,19 @@ public class Calculator {
     }
 
     public String getOrdinate(){
-        return "Merőlegesen: " + (calcAzimuth(startPoint, endPoint) > calcAzimuth(startPoint, outsiderPoint) ?
-                "+" : "-") +  String.format(Locale.getDefault(),"%.3fm",
-                calcDistance(outsiderPoint, calcPointInsideSection()))
+        double alfa = calcAzimuth(startPoint, endPoint) - calcAzimuth(startPoint, outsiderPoint);
+        double distance = calcDistance(startPoint, outsiderPoint);
+        return "Merőlegesen: " + (Math.sin(alfa) > 0 ? "+" : "") +
+                String.format(Locale.getDefault(),"%.3fm",
+                Math.sin(alfa) * distance)
                 .replace(",", ".");
     }
     public String getAbscissa(){
-        return "Vonalban: " + (Objects.equals(calcAzimuth(startPoint, endPoint), calcAzimuth(startPoint, calcPointInsideSection())) ?
-                "+" : "-") + String.format(Locale.getDefault(),"%.3fm",
-                 calcDistance(startPoint, calcPointInsideSection()))
+        double alfa = calcAzimuth(startPoint, endPoint) - calcAzimuth(startPoint, outsiderPoint);
+        double distance = calcDistance(startPoint, outsiderPoint);
+        return "Vonalban: " + (Math.cos(alfa) > 0 ? "+" :  "")  +
+                String.format(Locale.getDefault(),"%.3fm",
+                 Math.cos( alfa) * distance)
                 .replace(",", ".");
     }
 
