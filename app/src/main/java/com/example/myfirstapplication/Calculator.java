@@ -1,5 +1,7 @@
 package com.example.myfirstapplication;
 
+import android.util.Log;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,8 @@ public class Calculator {
     private final String lengthOfSection;
     private final String distanceBetweenPoints;
     private final List<Point> resultPoints;
-    private final DecimalFormat df = new DecimalFormat("0.0");
+    private static final DecimalFormat df = new DecimalFormat("0.0");
+
 
     public Calculator(Point startPoint, Point endPoint, int numberOfDividerPoints) {
         this.startPoint = startPoint;
@@ -30,14 +33,6 @@ public class Calculator {
         calcResultPoints();
     }
 
-    public Point getStartPoint() {
-        return startPoint;
-    }
-
-    public Point getEndPoint() {
-        return endPoint;
-    }
-
     public String getLengthOfSection() {
         return lengthOfSection;
     }
@@ -46,27 +41,20 @@ public class Calculator {
         return distanceBetweenPoints;
     }
 
-    public List<Point> getResultPoints() {
-        return resultPoints;
-    }
-
-    public Point getOutsiderPoint() {
-        return outsiderPoint;
-    }
     public void setOutsiderPoint(Point outsiderPoint) {
         this.outsiderPoint = outsiderPoint;
     }
 
-    private double calcDistance(Point startPoint, Point endPoint){
+    private static double calcDistance(Point startPoint, Point endPoint){
         return Math.sqrt(Math.pow(startPoint.getY_value() - endPoint.getY_value(), 2) +
                          Math.pow(startPoint.getX_value() - endPoint.getX_value(), 2));
     }
-    private Double calcAzimuth(Point startPoint, Point endPoint){
+    private static Double calcAzimuth(Point startPoint, Point endPoint){
 
         double deltaX = endPoint.getY_value() - startPoint.getY_value();
         double deltaY = endPoint.getX_value() - startPoint.getX_value();
 
-        if( deltaX >= 0 && deltaY > 0 ) {
+        if( deltaX > 0 && deltaY > 0 ) {
             return Math.atan(deltaX / deltaY);
         }
         else if( deltaX >= 0 &&  0 > deltaY ) {
@@ -78,7 +66,7 @@ public class Calculator {
         else if( 0 >= deltaX && deltaY > 0 ) {
             return 2 * Math.PI - Math.atan(Math.abs(deltaX) / deltaY);
         }
-        else if(deltaX > 0) {
+        else if( deltaX > 0 ) {
             return Math.PI / 2;
         }
         else if(0 > deltaX) {
@@ -155,4 +143,41 @@ public class Calculator {
         double lengthOfMainLine = calcDistance(startPoint, endPoint);
         return 3 * lengthOfMainLine / 1000 >= calcDistance(outsiderPoint, calcPointInsideSection());
     }
+
+    public static String calcCrossedLinesIntersection(Point mainLineStartPoint, Point mainLineEndPoint,
+                                              Point crossedLineStartPoint, Point crossedLineEndPoint){
+
+        Double mainLineAzimuth = calcAzimuth(mainLineStartPoint, mainLineEndPoint);
+        Double crossedLineAzimuth = calcAzimuth(crossedLineStartPoint, crossedLineEndPoint);
+        Double mainToCrossedAzimuth = calcAzimuth(mainLineStartPoint, crossedLineStartPoint);
+        Double crossedToMainAzimuth = calcAzimuth(crossedLineStartPoint, mainLineStartPoint);
+        if( mainLineAzimuth.isNaN() || crossedLineAzimuth.isNaN() ||
+                mainToCrossedAzimuth.isNaN() || crossedToMainAzimuth.isNaN() ){
+            return "-";
+        }
+        double alfa = Math.abs(mainLineAzimuth - mainToCrossedAzimuth);
+        if( alfa > Math.PI ){
+            alfa = 2 * Math.PI - alfa;
+        }
+        double beta = Math.abs(crossedLineAzimuth - crossedToMainAzimuth);
+        if( beta > Math.PI ){
+            beta = 2 * Math.PI - beta;
+        }
+        if( (alfa + beta) >= Math.PI ){
+            return "-";
+        }
+        double distanceOnMainLine = Math.sin(beta) * calcDistance(mainLineStartPoint, crossedLineStartPoint) / Math.sin(alfa + beta);
+        double distanceOnCrossedLine = Math.sin(alfa) * calcDistance(mainLineStartPoint, crossedLineStartPoint) / Math.sin(alfa + beta);
+        Point crossingPoint1 = new Point("crossing1",
+                mainLineStartPoint.getY_value() + distanceOnMainLine * Math.sin(mainLineAzimuth),
+                mainLineStartPoint.getX_value() + distanceOnMainLine * Math.cos(mainLineAzimuth));
+        Point crossingPoint2 = new Point("crossing2",
+                crossedLineStartPoint.getY_value() + distanceOnCrossedLine * Math.sin(crossedLineAzimuth),
+                crossedLineStartPoint.getX_value() + distanceOnCrossedLine * Math.cos(crossedLineAzimuth));
+        return String.format(Locale.getDefault(),"%.3f",
+                (crossingPoint1.getY_value() + crossingPoint2.getY_value()) / 2) + " " +
+                String.format(Locale.getDefault(),"%.3f",
+                        (crossingPoint1.getX_value() + crossingPoint2.getX_value()) / 2);
+    }
+
 }

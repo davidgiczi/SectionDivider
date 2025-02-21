@@ -18,7 +18,7 @@ public class SecondFragment extends Fragment {
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
 
@@ -33,17 +33,18 @@ public class SecondFragment extends Fragment {
         binding.lengthOfSection.setText(Objects.requireNonNull(result.get("length")).toString());
         binding.distanceBetweenPoints.setText(Objects.requireNonNull(result.get("distance")).toString());
 
-        if(result.get("dividerValue").toString().equals("0") || result.getStringArrayList("dividers").isEmpty()){
+        if(Objects.requireNonNull(result.get("dividerValue")).toString().equals("0") ||
+                Objects.requireNonNull(result.getStringArrayList("dividers")).isEmpty()){
             binding.dividerPointDataText.setText("");
         }
-        else if(result.getStringArrayList("dividers").size() == 1){
+        else if(Objects.requireNonNull(result.getStringArrayList("dividers")).size() == 1){
             binding.dividerPointDataText.setText(R.string.divider_point_coordinate);
         }
         else {
             binding.dividerPointDataText.setText(R.string.divider_points_coordinates);
         }
         StringBuilder sb = new StringBuilder();
-        for (String divider : result.getStringArrayList("dividers")) {
+        for (String divider : Objects.requireNonNull(result.getStringArrayList("dividers"))) {
             sb.append(divider);
             sb.append("\n\n");
         }
@@ -51,7 +52,7 @@ public class SecondFragment extends Fragment {
         if( result.get("insider") == null ){
             return;
         }
-        binding.insidePointData.setText(result.get("insider").toString());
+        binding.insidePointData.setText(Objects.requireNonNull(result.get("insider")).toString());
         if( (boolean) result.get("isOkAbscissa") ){
             binding.abscissa.setTextColor(Color.parseColor("#3BB143"));
         }

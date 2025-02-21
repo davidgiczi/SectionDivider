@@ -3,6 +3,7 @@ package com.example.myfirstapplication;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 
 import com.example.myfirstapplication.databinding.FragmentFirstBinding;
+
+import java.util.Objects;
 
 public class FirstFragment extends Fragment {
 
@@ -81,6 +84,7 @@ public class FirstFragment extends Fragment {
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Toast inputDataToast;
                 if(binding.startYInputField.getText().toString().isEmpty()){
                     inputDataToast = Toast.makeText(getContext(),
