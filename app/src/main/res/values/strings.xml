@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">LineGeodesy</string>
-    <string name="action_intersection">Metszéspont számítása</string>
+    <string name="action_intersection">Egyenesek metszéspontja</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">Szakasz részekre osztása</string>
     <string name="second_fragment_label">Számított eredmények</string>
     <string name="count">Számol</string>
-    <string name="exit">Kilépés</string>
+    <string name="action_exit">Kilépés</string>
     <string name="previous">Vissza</string>
     <string name="y_coordinate_text">Y=</string>
     <string name="x_coordinate_text">X=</string>
@@ -23,9 +23,9 @@
     <string name="divider_points_coordinates">Az osztópontok koordinátái:</string>
     <string name="divider_point_coordinate">Az osztópont koordinátája:</string>
     <string name="outsider_point_text">Külső pont koordinátája:</string>
+    <string name="intersection_point_text">A metszéspont koordinátái:</string>
     <string name="yes">Igen</string>
     <string name="no">Nem</string>
     <string name="close_app_title">Alkalmazás bezárása</string>
     <string name="close_app_question">Biztos, hogy ki akarsz lépni az alkalmazásból?</string>
-    <string name="lorem_ipsum"></string>
 </resources>

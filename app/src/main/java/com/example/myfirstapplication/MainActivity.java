@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    private PopupWindow intersectionWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void popupStartGameDialog(){
-        ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_first, null);
-        PopupWindow startGameWindow = new PopupWindow(container, 1000, 700, true);
-        startGameWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, - 400);
+        ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_intersection, null);
+        intersectionWindow = new PopupWindow(container, 1050, 1500, true);
+        intersectionWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, - 300);
     }
 
     @Override
@@ -76,6 +77,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+       if( item.getItemId() == R.id.option_intersection ){
+            popupStartGameDialog();
+        }
+       else if( item.getItemId() == R.id.option_exit){
+           exitAppDialog();
+       }
+
         return super.onOptionsItemSelected(item);
     }
 
