@@ -53,7 +53,7 @@ public class SecondFragment extends Fragment {
             return;
         }
         binding.insidePointData.setText(Objects.requireNonNull(result.get("insider")).toString());
-        if( (boolean) result.get("isOkAbscissa") ){
+        if( result.getBoolean("isOkAbscissa") ){
             binding.abscissa.setTextColor(Color.parseColor("#3BB143"));
         }
         else{
@@ -61,7 +61,7 @@ public class SecondFragment extends Fragment {
         }
         String abscissaData = result.get("abscissa") + " " + result.get("abscissaError");
         binding.abscissa.setText(abscissaData);
-        if( (boolean) result.get("isOkOrdinate") ){
+        if( result.getBoolean("isOkOrdinate") ){
             binding.ordinate.setTextColor(Color.parseColor("#3BB143"));
         }
         else{

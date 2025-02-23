@@ -1,9 +1,8 @@
 package com.example.myfirstapplication;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
+
+import java.util.Locale;
 
 public class Point  {
 
@@ -16,9 +15,6 @@ public class Point  {
         this.y_value = y_value;
         this.x_value = x_value;
     }
-    public String getPointID() {
-        return pointID;
-    }
 
     public double getY_value() {
         return y_value;
@@ -28,12 +24,13 @@ public class Point  {
         return x_value;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return    String.format("%13s",  pointID)
-                + String.format("%13.3f",  y_value)
+                + String.format(Locale.getDefault(),"%13.3f",  y_value)
                 .replace(',', '.')
-                + String.format("%13.3f", x_value)
+                + String.format(Locale.getDefault(),"%13.3f", x_value)
                 .replace(',', '.');
     }
 

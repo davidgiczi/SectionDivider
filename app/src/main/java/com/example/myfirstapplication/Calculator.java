@@ -1,12 +1,9 @@
 package com.example.myfirstapplication;
 
-import android.util.Log;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class Calculator {
 
@@ -153,7 +150,7 @@ public class Calculator {
         Double crossedToMainAzimuth = calcAzimuth(crossedLineStartPoint, mainLineStartPoint);
         if( mainLineAzimuth.isNaN() || crossedLineAzimuth.isNaN() ||
                 mainToCrossedAzimuth.isNaN() || crossedToMainAzimuth.isNaN() ){
-            return "-";
+            return null;
         }
         double alfa = Math.abs(mainLineAzimuth - mainToCrossedAzimuth);
         if( alfa > Math.PI ){
@@ -164,7 +161,7 @@ public class Calculator {
             beta = 2 * Math.PI - beta;
         }
         if( (alfa + beta) >= Math.PI ){
-            return "-";
+            return null;
         }
         double distanceOnMainLine = Math.sin(beta) * calcDistance(mainLineStartPoint, crossedLineStartPoint) / Math.sin(alfa + beta);
         double distanceOnCrossedLine = Math.sin(alfa) * calcDistance(mainLineStartPoint, crossedLineStartPoint) / Math.sin(alfa + beta);
@@ -174,9 +171,9 @@ public class Calculator {
         Point crossingPoint2 = new Point("crossing2",
                 crossedLineStartPoint.getY_value() + distanceOnCrossedLine * Math.sin(crossedLineAzimuth),
                 crossedLineStartPoint.getX_value() + distanceOnCrossedLine * Math.cos(crossedLineAzimuth));
-        return String.format(Locale.getDefault(),"%.3f",
-                (crossingPoint1.getY_value() + crossingPoint2.getY_value()) / 2) + " " +
-                String.format(Locale.getDefault(),"%.3f",
+        return String.format(Locale.getDefault(),"%13.3f",
+                (crossingPoint1.getY_value() + crossingPoint2.getY_value()) / 2) +
+                String.format(Locale.getDefault(),"%13.3f",
                         (crossingPoint1.getX_value() + crossingPoint2.getX_value()) / 2);
     }
 

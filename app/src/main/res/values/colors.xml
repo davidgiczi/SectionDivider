@@ -4,7 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#0000FF</color>
     <color name="green">#3BB143</color>
+    <color name="purple">#6750A4</color>
     <color name="red">#e74c3c</color>
     <color name="default_background_color">#FAF9FD</color>
-    <color name="light_gray">#B4B4B4</color>
 </resources>

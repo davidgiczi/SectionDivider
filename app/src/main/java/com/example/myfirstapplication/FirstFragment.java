@@ -20,7 +20,7 @@ public class FirstFragment extends Fragment {
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceStat
     ) {
         binding =  FragmentFirstBinding.inflate(inflater, container, false);
@@ -113,20 +113,20 @@ public class FirstFragment extends Fragment {
             }
 
             Point startPoint = new Point("Kezdőpont:",
-                    Double.parseDouble(binding.startYInputField.getText().toString()),
-                    Double.parseDouble(binding.startXInputField.getText().toString()));
+                    Double.parseDouble(binding.startYInputField.getText().toString().replace(",", ".")),
+                    Double.parseDouble(binding.startXInputField.getText().toString().replace(",", ".")));
             Point endPoint = new Point("Végpont:",
-                    Double.parseDouble(binding.endYInputField.getText().toString()),
-                    Double.parseDouble(binding.endXInputField.getText().toString()));
-            Point outsiderPoint = null;
+                    Double.parseDouble(binding.endYInputField.getText().toString().replace(",", ".")),
+                    Double.parseDouble(binding.endXInputField.getText().toString().replace(",", ".")));
+            Point outsiderPoint;
             int numberOfDividerPoints =
                     Integer.parseInt(binding.numberOfDividerPointsInputField.getText().toString());
             Calculator calc = new Calculator(startPoint,endPoint, numberOfDividerPoints);
             if( !binding.outsideYField.getText().toString().isEmpty() &&
                     !binding.outsideXField.getText().toString().isEmpty() ){
                 outsiderPoint  = new Point("Outsider",
-                        Double.parseDouble(binding.outsideYField.getText().toString()),
-                        Double.parseDouble(binding.outsideXField.getText().toString()));
+                        Double.parseDouble(binding.outsideYField.getText().toString().replace(",", ".")),
+                        Double.parseDouble(binding.outsideXField.getText().toString().replace(",", ".")));
                 calc.setOutsiderPoint(outsiderPoint);
             }
             Bundle resultData = new Bundle();
