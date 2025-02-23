@@ -160,7 +160,7 @@ public class Calculator {
         if( beta > Math.PI ){
             beta = 2 * Math.PI - beta;
         }
-        if( (alfa + beta) >= Math.PI ){
+        if( (alfa + beta) >= Math.PI || alfa + beta == 0 ){
             return null;
         }
         double distanceOnMainLine = Math.sin(beta) * calcDistance(mainLineStartPoint, crossedLineStartPoint) / Math.sin(alfa + beta);
