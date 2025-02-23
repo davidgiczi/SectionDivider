@@ -25,15 +25,14 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.myfirstapplication.databinding.ActivityMainBinding;
 
 
-
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-    private String mainLineStartY;
-    private String mainLineStartX;
-    private String mainLineEndY;
-    private String mainLineEndX;
+    public static String mainLineStartY;
+    public static String mainLineStartX;
+    public static String mainLineEndY;
+    public static String mainLineEndX;
     private String crossedLineStartY;
     private String crossedLineStartX;
     private String crossedLineEndY;

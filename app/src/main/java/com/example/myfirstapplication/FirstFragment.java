@@ -129,6 +129,10 @@ public class FirstFragment extends Fragment {
                         Double.parseDouble(binding.outsideXField.getText().toString().replace(",", ".")));
                 calc.setOutsiderPoint(outsiderPoint);
             }
+            MainActivity.mainLineStartY = binding.startYInputField.getText().toString();
+            MainActivity.mainLineStartX = binding.startXInputField.getText().toString();
+            MainActivity.mainLineEndY = binding.endYInputField.getText().toString();
+            MainActivity.mainLineEndX = binding.endXInputField.getText().toString();
             Bundle resultData = new Bundle();
             resultData.putString("length", calc.getLengthOfSection());
             resultData.putString("distance", calc.getDistanceBetweenPoints());
