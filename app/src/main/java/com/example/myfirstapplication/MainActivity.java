@@ -157,10 +157,8 @@ public class MainActivity extends AppCompatActivity {
                     TextView resultPointData = (TextView) container.findViewById(R.id.intersection_point_data);
                     resultPointData.setTextColor(Color.BLUE);
                     resultPointData.setText(crossingPointData);
-                    resultPointData.setOnClickListener(v -> {
-                        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                        clipboard.setPrimaryClip(ClipData.newPlainText("Copied Text", resultPointData.getText()));
-                    });
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    clipboard.setPrimaryClip(ClipData.newPlainText("Copied Data", resultPointData.getText()));
                 }
             }
         });
