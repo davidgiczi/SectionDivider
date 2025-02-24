@@ -171,12 +171,11 @@ public class Calculator {
         Point crossingPoint2 = new Point("crossing2",
                 crossedLineStartPoint.getY_value() + distanceOnCrossedLine * Math.sin(crossedLineAzimuth),
                 crossedLineStartPoint.getX_value() + distanceOnCrossedLine * Math.cos(crossedLineAzimuth));
-        String crossing1Y = String.valueOf(crossingPoint1.getY_value());
-        String crossing1X = String.valueOf(crossingPoint1.getX_value());
-        String crossing2Y = String.valueOf(crossingPoint2.getY_value());
-        String crossing2X = String.valueOf(crossingPoint2.getX_value());
-        if( !crossing1Y.substring(0, crossing1Y.length() - 1).equals(crossing2Y.substring(0, crossing2Y.length() - 1)) &&
-                !crossing1X.substring(0, crossing1X.length() - 1).equals(crossing2X.substring(0, crossing2X.length() - 1)) ){
+        double roundedCrossing1PointY = Math.round(100 * crossingPoint1.getY_value()) / 100.0;
+        double roundedCrossing1PointX = Math.round(100 * crossingPoint1.getX_value()) / 100.0;
+        double roundedCrossing2PointY = Math.round(100 * crossingPoint2.getY_value()) / 100.0;
+        double roundedCrossing2PointX = Math.round(100 * crossingPoint2.getX_value()) / 100.0;
+        if( roundedCrossing1PointY != roundedCrossing2PointY && roundedCrossing1PointX != roundedCrossing2PointX ){
             return null;
         }
         return String.format(Locale.getDefault(),"%13.3f",
