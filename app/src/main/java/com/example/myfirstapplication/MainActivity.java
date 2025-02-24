@@ -1,7 +1,8 @@
 package com.example.myfirstapplication;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -156,6 +157,10 @@ public class MainActivity extends AppCompatActivity {
                     TextView resultPointData = (TextView) container.findViewById(R.id.intersection_point_data);
                     resultPointData.setTextColor(Color.BLUE);
                     resultPointData.setText(crossingPointData);
+                    resultPointData.setOnClickListener(v -> {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        clipboard.setPrimaryClip(ClipData.newPlainText("Copied Text", resultPointData.getText()));
+                    });
                 }
             }
         });
