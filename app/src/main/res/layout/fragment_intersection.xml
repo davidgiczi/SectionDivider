@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true">
+    android:focusable="true"
+    tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -87,6 +88,7 @@
             android:inputType="numberSigned|numberDecimal"
             android:maxLength="10"
             android:selectAllOnFocus="false"
+            android:textIsSelectable="true"
             android:singleLine="true"
             android:textSize="20sp"
             android:visibility="visible"
@@ -127,6 +129,7 @@
             android:ems="10"
             android:enabled="true"
             android:gravity="center"
+            android:textIsSelectable="true"
             android:inputType="numberSigned|numberDecimal"
             android:maxLength="10"
             android:selectAllOnFocus="false"
@@ -196,6 +199,7 @@
             android:ems="10"
             android:enabled="true"
             android:gravity="center"
+            android:textIsSelectable="true"
             android:inputType="numberSigned|numberDecimal"
             android:maxLength="10"
             android:selectAllOnFocus="false"
@@ -215,6 +219,7 @@
             android:ems="10"
             android:enabled="true"
             android:gravity="center"
+            android:textIsSelectable="true"
             android:inputType="numberSigned|numberDecimal"
             android:maxLength="10"
             android:selectAllOnFocus="false"
