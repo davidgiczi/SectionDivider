@@ -184,4 +184,32 @@ public class Calculator {
                         (crossingPoint1.getX_value() + crossingPoint2.getX_value()) / 2);
     }
 
+    public static String calcIntersectionByAngles(Point firstPoint, Point secondPoint,
+                                                  Double firstAngle, Double secondAngle){
+        Double firstPointAzimuth = calcAzimuth(firstPoint, secondPoint);
+        if( firstPointAzimuth.isNaN() ){
+            return null;
+        }
+        double firstAnglesDiff = Math.abs(firstPointAzimuth - Math.toRadians(firstAngle));
+        double angle1 =  firstAnglesDiff > Math.PI ?
+                Math.abs(firstAnglesDiff - 2 * Math.PI) : firstAnglesDiff;
+        double secondPointAzimuth = calcAzimuth(secondPoint,firstPoint);
+        double secondAnglesDiff = Math.abs(secondPointAzimuth - Math.toRadians(secondAngle));
+        double angle2 = secondAnglesDiff > Math.PI ?
+                Math.abs(secondAnglesDiff - 2 * Math.PI) : secondAnglesDiff;
+        if( angle1 + angle2 >= Math.PI ){
+            return null;
+        }
+        double mainDistance = calcDistance(firstPoint, secondPoint);
+        double firstDistance = Math.sin(angle2) *  mainDistance / Math.sin(angle1 + angle2);
+        double secondDistance = Math.sin(angle1) * mainDistance / Math.sin(angle1 + angle2);
+        double firstY = firstPoint.getY_value() + Math.sin(Math.toRadians(firstAngle)) * firstDistance;
+        double firstX = firstPoint.getX_value() + Math.cos(Math.toRadians(firstAngle)) * firstDistance;
+        double secondY = secondPoint.getY_value() + Math.sin(Math.toRadians(secondAngle)) * secondDistance;
+        double secondX = secondPoint.getX_value() + Math.cos(Math.toRadians(secondAngle)) * secondDistance;
+        return String.format(Locale.getDefault(),"%13.3f", (firstY + secondY) / 2) +
+                String.format(Locale.getDefault(),"%13.3f", (firstX + secondX) / 2);
+    }
+
+
 }

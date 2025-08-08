@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,14 +71,14 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    public void popupStartGameDialog(){
+    public void popupCrossedLinesIntersectionDialog(){
         ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_intersection, null);
         PopupWindow intersectionWindow = new PopupWindow(container, 1050, 1500, true);
         intersectionWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -250);
-        EditText startYField = ((EditText) container.findViewById(R.id.start_y_input_field));
-        EditText startXField = ((EditText) container.findViewById(R.id.start_x_input_field));
-        EditText endYField = ((EditText) container.findViewById(R.id.end_y_input_field));
-        EditText endXField = ((EditText) container.findViewById(R.id.end_x_input_field));
+        EditText startYField = container.findViewById(R.id.start_y_input_field);
+        EditText startXField = container.findViewById(R.id.start_x_input_field);
+        EditText endYField = container.findViewById(R.id.end_y_input_field);
+        EditText endXField = container.findViewById(R.id.end_x_input_field);
         startYField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -129,41 +130,72 @@ public class MainActivity extends AppCompatActivity {
         }
         Button calcButton = container.findViewById(R.id.button_calc);
         calcButton.setOnClickListener(d -> {
+
             crossedLineStartY = startYField.getText().toString();
             crossedLineStartX = startXField.getText().toString();
             crossedLineEndY = endYField.getText().toString();
             crossedLineEndX = endXField.getText().toString();
-            if( isValidInputData(crossedLineStartY, crossedLineStartX, crossedLineEndY, crossedLineEndX) ){
-                String crossingPointData = Calculator.calcCrossedLinesIntersection(
+
+            EditText mainLineEndYField = (EditText) binding.getRoot().findViewById(R.id.end_y_input_field);
+            Double firstAngle = isValidIntersectionByAnglesInputData(mainLineEndYField.getText().toString());
+            Double secondAngle = isValidIntersectionByAnglesInputData(crossedLineEndY);
+
+            if( firstAngle != null && secondAngle != null &&
+                    isValidCrossedLinesInputData(crossedLineStartY, crossedLineStartX, crossedLineEndY, crossedLineEndX) ){
+
+                String intersectionPointByAngles = Calculator.calcIntersectionByAngles(
                         new Point("MainStartPoint",
                                 Double.parseDouble(mainLineStartY.replace(",", ".")),
                                 Double.parseDouble(mainLineStartX.replace(",", "."))),
-                        new Point("MainEndPoint",
-                                Double.parseDouble(mainLineEndY.replace(",", ".")),
-                                Double.parseDouble(mainLineEndX.replace(",", "."))),
                         new Point("CrossedStartPoint",
                                 Double.parseDouble(crossedLineStartY.replace(",", ".")),
                                 Double.parseDouble(crossedLineStartX.replace(",", "."))),
-                        new Point("CrossedEndPoint",
-                                Double.parseDouble(crossedLineEndY.replace(",", ".")),
-                                Double.parseDouble(crossedLineEndX.replace(",", "."))));
-
-                if( crossingPointData == null ){
+                        firstAngle, secondAngle);
+                if( intersectionPointByAngles == null ){
                     TextView errorText = (TextView) container.findViewById(R.id.intersection_point_data);
                     errorText.setTextColor(Color.RED);
                     errorText.setText(R.string.error_intersection);
                 }
-                 else{
+                else{
                     TextView resultPointData = (TextView) container.findViewById(R.id.intersection_point_data);
                     resultPointData.setTextColor(Color.BLUE);
-                    resultPointData.setText(crossingPointData);
+                    resultPointData.setText(intersectionPointByAngles);
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     clipboard.setPrimaryClip(ClipData.newPlainText("Copied Data", resultPointData.getText()));
                 }
+
             }
+            else if( isValidCrossedLinesInputData(crossedLineStartY, crossedLineStartX, crossedLineEndY, crossedLineEndX) &&
+                        !isAngle(mainLineEndY) && !isAngle(crossedLineEndY) ){
+
+                   String crossingPointData = Calculator.calcCrossedLinesIntersection(
+                           new Point("MainStartPoint",
+                                   Double.parseDouble(mainLineStartY.replace(",", ".")),
+                                   Double.parseDouble(mainLineStartX.replace(",", "."))),
+                           new Point("MainEndPoint",
+                                   Double.parseDouble(mainLineEndY.replace(",", ".")),
+                                   Double.parseDouble(mainLineEndX.replace(",", "."))),
+                           new Point("CrossedStartPoint",
+                                   Double.parseDouble(crossedLineStartY.replace(",", ".")),
+                                   Double.parseDouble(crossedLineStartX.replace(",", "."))),
+                           new Point("CrossedEndPoint",
+                                   Double.parseDouble(crossedLineEndY.replace(",", ".")),
+                                   Double.parseDouble(crossedLineEndX.replace(",", "."))));
+                   if (crossingPointData == null) {
+                       TextView errorText = (TextView) container.findViewById(R.id.intersection_point_data);
+                       errorText.setTextColor(Color.RED);
+                       errorText.setText(R.string.error_intersection);
+                   } else {
+                       TextView resultPointData = (TextView) container.findViewById(R.id.intersection_point_data);
+                       resultPointData.setTextColor(Color.BLUE);
+                       resultPointData.setText(crossingPointData);
+                       ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                       clipboard.setPrimaryClip(ClipData.newPlainText("Copied Data", resultPointData.getText()));
+                   }
+               }
         });
     }
-    private boolean isValidInputData(String startY, String startX, String endY, String endX){
+    private boolean isValidCrossedLinesInputData(String startY, String startX, String endY, String endX){
         EditText mainLineStartYField = (EditText) binding.getRoot().findViewById(R.id.start_y_input_field);
         if( mainLineStartYField != null ){
             mainLineStartY = mainLineStartYField.getText().toString();
@@ -193,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Az alapvonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if( mainLineEndX.trim().isEmpty() ){
+        else if( mainLineEndX.trim().isEmpty() && !isAngle(mainLineEndY)){
             Toast.makeText(this, "Az alapvonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -209,13 +241,74 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "A keresztezett vonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if( endX.trim().isEmpty() ){
+        else if( endX.trim().isEmpty() && !isAngle(endY)){
             Toast.makeText(this, "A keresztezett vonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
 
+    private boolean isAngle(String inputData){
+        return inputData != null &&
+                (inputData.trim().startsWith(".") ||
+                inputData.trim().startsWith(","));
+    }
+
+    private Double isValidIntersectionByAnglesInputData(String angleValue){
+
+         if( angleValue.trim().isEmpty() ){
+             Toast.makeText(this, "Irányszög megadása szükséges.",
+                     Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        else if( !angleValue.trim().startsWith(".") && !angleValue.trim().startsWith(",") ){
+            return null;
+        }
+        else if( 6 > angleValue.length() || 8 < angleValue.length() ){
+            Toast.makeText(this, "A bevitt irányszög túl sok vagy kevés számértéket tarlamaz.",
+                    Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        int angle = 0;
+        int min = 0;
+        int sec = 0;
+        switch (angleValue.length() ){
+            case 6 :
+                angle = Integer.parseInt(angleValue.substring(1,2));
+                min = Integer.parseInt(angleValue.substring(2,4));
+                sec = Integer.parseInt(angleValue.substring(4));
+                break;
+            case 7 :
+                angle = Integer.parseInt(angleValue.substring(1,3));
+                min = Integer.parseInt(angleValue.substring(3,5));
+                sec = Integer.parseInt(angleValue.substring(5));
+                break;
+            case 8 :
+                angle = Integer.parseInt(angleValue.substring(1,4));
+                min = Integer.parseInt(angleValue.substring(4,6));
+                sec = Integer.parseInt(angleValue.substring(6));
+        }
+
+        if( angle > 359 || angle < 0){
+            Toast.makeText(this, "Az irányszög fok értéke 0 =< fok =< 359 lehet.",
+                    Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        else if( min > 59 || min < 0){
+            Toast.makeText(this, "Az irányszög perc értéke 0 =< perc =< 59 lehet.",
+                    Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        else if( sec > 59 || sec < 0){
+            Toast.makeText(this, "Az irányszög mperc értéke 0 =< mperc =< 59 lehet.",
+                    Toast.LENGTH_SHORT).show();
+            return null;
+        }
+            Log.d("angle", ": " + angle);
+            Log.d("min", ": " + min);
+            Log.d("sec", ": " + sec);
+        return angle + min / 60.0 + sec / 3600.0;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -227,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
        if( item.getItemId() == R.id.option_intersection ){
-            popupStartGameDialog();
+            popupCrossedLinesIntersectionDialog();
         }
        else if( item.getItemId() == R.id.option_exit){
            exitAppDialog();
