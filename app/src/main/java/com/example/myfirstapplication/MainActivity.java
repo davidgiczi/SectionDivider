@@ -137,7 +137,8 @@ public class MainActivity extends AppCompatActivity {
             crossedLineEndX = endXField.getText().toString();
 
             EditText mainLineEndYField = (EditText) binding.getRoot().findViewById(R.id.end_y_input_field);
-            Double firstAngle = isValidIntersectionByAnglesInputData(mainLineEndYField.getText().toString());
+            Double firstAngle = isValidIntersectionByAnglesInputData(mainLineEndY == null ?
+            mainLineEndYField.getText().toString() : mainLineEndY);
             Double secondAngle = isValidIntersectionByAnglesInputData(crossedLineEndY);
 
             if( firstAngle != null && secondAngle != null &&
@@ -193,6 +194,9 @@ public class MainActivity extends AppCompatActivity {
                        clipboard.setPrimaryClip(ClipData.newPlainText("Copied Data", resultPointData.getText()));
                    }
                }
+            else {
+                Toast.makeText(this, "Hiányzó bemeneti adatok.", Toast.LENGTH_LONG).show();
+            }
         });
     }
     private boolean isValidCrossedLinesInputData(String startY, String startX, String endY, String endX){
@@ -214,35 +218,35 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if( mainLineStartY.trim().isEmpty() ){
-            Toast.makeText(this, "Az alapvonal kezdőpont Y koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Az alapvonal kezdőpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
         else if( mainLineStartX.trim().isEmpty() ){
-            Toast.makeText(this, "Az alapvonal kezdőpont X koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Az alapvonal kezdőpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
         else if( mainLineEndY.trim().isEmpty() ){
-            Toast.makeText(this, "Az alapvonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Az alapvonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
         else if( mainLineEndX.trim().isEmpty() && !isAngle(mainLineEndY)){
-            Toast.makeText(this, "Az alapvonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Az alapvonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
         else if( startY.trim().isEmpty() ){
-            Toast.makeText(this, "A keresztezett vonal kezdőpont Y koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "A keresztezett vonal kezdőpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
         else if( startX.trim().isEmpty() ){
-            Toast.makeText(this, "A keresztezett vonal kezdőpont X koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "A keresztezett vonal kezdőpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
         else if( endY.trim().isEmpty() ){
-            Toast.makeText(this, "A keresztezett vonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "A keresztezett vonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
         else if( endX.trim().isEmpty() && !isAngle(endY)){
-            Toast.makeText(this, "A keresztezett vonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "A keresztezett vonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -258,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
          if( angleValue.trim().isEmpty() ){
              Toast.makeText(this, "Irányszög megadása szükséges.",
-                     Toast.LENGTH_SHORT).show();
+                     Toast.LENGTH_LONG).show();
             return null;
         }
         else if( !angleValue.trim().startsWith(".") && !angleValue.trim().startsWith(",") ){
@@ -266,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else if( 6 > angleValue.length() || 8 < angleValue.length() ){
             Toast.makeText(this, "A bevitt irányszög túl sok vagy kevés számértéket tarlamaz.",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_LONG).show();
             return null;
         }
         int angle = 0;
@@ -291,17 +295,17 @@ public class MainActivity extends AppCompatActivity {
 
         if( angle > 359 || angle < 0){
             Toast.makeText(this, "Az irányszög fok értéke 0 =< fok =< 359 lehet.",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_LONG).show();
             return null;
         }
         else if( min > 59 || min < 0){
             Toast.makeText(this, "Az irányszög perc értéke 0 =< perc =< 59 lehet.",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_LONG).show();
             return null;
         }
         else if( sec > 59 || sec < 0){
             Toast.makeText(this, "Az irányszög mperc értéke 0 =< mperc =< 59 lehet.",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_LONG).show();
             return null;
         }
             Log.d("angle", ": " + angle);
