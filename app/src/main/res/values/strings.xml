@@ -29,4 +29,5 @@
     <string name="close_app_title">Alkalmazás bezárása</string>
     <string name="close_app_question">Biztos, hogy ki akarsz lépni az alkalmazásból?</string>
     <string name="error_intersection">Metszéspont nem számítható!</string>
+    <string name="exchange_data">Koordináták cseréje</string>
 </resources>

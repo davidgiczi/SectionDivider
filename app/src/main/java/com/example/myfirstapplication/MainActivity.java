@@ -1,5 +1,6 @@
 package com.example.myfirstapplication;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    public ViewGroup container;
     public static String mainLineStartY;
     public static String mainLineStartX;
     public static String mainLineEndY;
@@ -41,15 +44,14 @@ public class MainActivity extends AppCompatActivity {
     private String crossedLineEndY;
     private String crossedLineEndX;
 
+    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_intersection, null);
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.toolbar);
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -71,14 +73,15 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
+
     public void popupCrossedLinesIntersectionDialog(){
-        ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_intersection, null);
         PopupWindow intersectionWindow = new PopupWindow(container, 1050, 1500, true);
         intersectionWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -250);
         EditText startYField = container.findViewById(R.id.start_y_input_field);
         EditText startXField = container.findViewById(R.id.start_x_input_field);
         EditText endYField = container.findViewById(R.id.end_y_input_field);
         EditText endXField = container.findViewById(R.id.end_x_input_field);
+        ((TextView) container.findViewById(R.id.intersection_point_data)).setText(null);
         startYField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             crossedLineEndY = endYField.getText().toString();
             crossedLineEndX = endXField.getText().toString();
 
-            EditText mainLineEndYField = (EditText) binding.getRoot().findViewById(R.id.end_y_input_field);
+            EditText mainLineEndYField = binding.getRoot().findViewById(R.id.end_y_input_field);
             Double firstAngle = isValidIntersectionByAnglesInputData(mainLineEndY == null ?
             mainLineEndYField.getText().toString() : mainLineEndY);
             Double secondAngle = isValidIntersectionByAnglesInputData(crossedLineEndY);
@@ -153,12 +156,12 @@ public class MainActivity extends AppCompatActivity {
                                 Double.parseDouble(crossedLineStartX.replace(",", "."))),
                         firstAngle, secondAngle);
                 if( intersectionPointByAngles == null ){
-                    TextView errorText = (TextView) container.findViewById(R.id.intersection_point_data);
+                    TextView errorText = container.findViewById(R.id.intersection_point_data);
                     errorText.setTextColor(Color.RED);
                     errorText.setText(R.string.error_intersection);
                 }
                 else{
-                    TextView resultPointData = (TextView) container.findViewById(R.id.intersection_point_data);
+                    TextView resultPointData = container.findViewById(R.id.intersection_point_data);
                     resultPointData.setTextColor(Color.BLUE);
                     resultPointData.setText(intersectionPointByAngles);
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -167,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
             else if( isValidCrossedLinesInputData(crossedLineStartY, crossedLineStartX, crossedLineEndY, crossedLineEndX) &&
-                        !isAngle(mainLineEndY) && !isAngle(crossedLineEndY) ){
+                    isAngle(mainLineEndY) && isAngle(crossedLineEndY)){
 
                    String crossingPointData = Calculator.calcCrossedLinesIntersection(
                            new Point("MainStartPoint",
@@ -183,11 +186,11 @@ public class MainActivity extends AppCompatActivity {
                                    Double.parseDouble(crossedLineEndY.replace(",", ".")),
                                    Double.parseDouble(crossedLineEndX.replace(",", "."))));
                    if (crossingPointData == null) {
-                       TextView errorText = (TextView) container.findViewById(R.id.intersection_point_data);
+                       TextView errorText = container.findViewById(R.id.intersection_point_data);
                        errorText.setTextColor(Color.RED);
                        errorText.setText(R.string.error_intersection);
                    } else {
-                       TextView resultPointData = (TextView) container.findViewById(R.id.intersection_point_data);
+                       TextView resultPointData = container.findViewById(R.id.intersection_point_data);
                        resultPointData.setTextColor(Color.BLUE);
                        resultPointData.setText(crossingPointData);
                        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -200,19 +203,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private boolean isValidCrossedLinesInputData(String startY, String startX, String endY, String endX){
-        EditText mainLineStartYField = (EditText) binding.getRoot().findViewById(R.id.start_y_input_field);
+        EditText mainLineStartYField = binding.getRoot().findViewById(R.id.start_y_input_field);
         if( mainLineStartYField != null ){
             mainLineStartY = mainLineStartYField.getText().toString();
         }
-        EditText mainLineStartXField = (EditText) binding.getRoot().findViewById(R.id.start_x_input_field);
+        EditText mainLineStartXField = binding.getRoot().findViewById(R.id.start_x_input_field);
         if(  mainLineStartXField != null ) {
             mainLineStartX = mainLineStartXField.getText().toString();
         }
-        EditText mainLineEndYField = (EditText) binding.getRoot().findViewById(R.id.end_y_input_field);
+        EditText mainLineEndYField = binding.getRoot().findViewById(R.id.end_y_input_field);
         if( mainLineEndYField != null ) {
             mainLineEndY = mainLineEndYField.getText().toString();
         }
-        EditText mainLineEndXField = (EditText) binding.getRoot().findViewById(R.id.end_x_input_field);
+        EditText mainLineEndXField = binding.getRoot().findViewById(R.id.end_x_input_field);
         if( mainLineEndXField != null ){
             mainLineEndX = mainLineEndXField.getText().toString();
         }
@@ -229,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Az alapvonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( mainLineEndX.trim().isEmpty() && !isAngle(mainLineEndY)){
+        else if( mainLineEndX.trim().isEmpty() && isAngle(mainLineEndY)){
             Toast.makeText(this, "Az alapvonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
@@ -245,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "A keresztezett vonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( endX.trim().isEmpty() && !isAngle(endY)){
+        else if( endX.trim().isEmpty() && isAngle(endY)){
             Toast.makeText(this, "A keresztezett vonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
@@ -253,9 +256,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isAngle(String inputData){
-        return inputData != null &&
-                (inputData.trim().startsWith(".") ||
-                inputData.trim().startsWith(","));
+        return inputData == null ||
+                (!inputData.trim().startsWith(".") &&
+                        !inputData.trim().startsWith(","));
     }
 
     private Double isValidIntersectionByAnglesInputData(String angleValue){
@@ -317,7 +320,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
+        MenuCompat.setGroupDividerEnabled(menu, true);
+        return true;
     }
 
     @Override
@@ -329,8 +333,86 @@ public class MainActivity extends AppCompatActivity {
        else if( item.getItemId() == R.id.option_exit){
            exitAppDialog();
        }
+       else if( item.getItemId() == R.id.exchange_data ){
+           exchangeData();
+       }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void exchangeData(){
+        EditText mainLineStartYField = binding.getRoot().findViewById(R.id.start_y_input_field);
+        if( mainLineStartYField == null || mainLineStartYField.getText().toString().isEmpty() ){
+            Toast.makeText(this, "Alapvonal kezdőpont Y koordináta megadása szükséges.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        EditText mainLineStartXField = binding.getRoot().findViewById(R.id.start_x_input_field);
+        if( mainLineStartXField == null || mainLineStartXField.getText().toString().isEmpty() ){
+            Toast.makeText(this, "Alapvonal kezdőpont X koordináta megadása szükséges.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        EditText mainLineEndYField = binding.getRoot().findViewById(R.id.end_y_input_field);
+        if( mainLineEndYField == null || mainLineEndYField.getText().toString().isEmpty() ){
+            Toast.makeText(this, "Alapvonal végpont Y koordináta megadása szükséges.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        EditText mainLineEndXField = binding.getRoot().findViewById(R.id.end_x_input_field);
+        if( mainLineEndXField == null || mainLineEndXField.getText().toString().isEmpty() ){
+            Toast.makeText(this, "Alapvonal végpont X koordináta megadása szükséges.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        EditText crossedLineStartYField = container.findViewById(R.id.start_y_input_field);
+        if( crossedLineStartYField == null || crossedLineStartYField.getText().toString().isEmpty() ){
+            Toast.makeText(this, "Keresztezett vonal kezdőpont Y koordináta megadása szükséges.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        EditText crossedLineStartXField = container.findViewById(R.id.start_x_input_field);
+        if( crossedLineStartXField == null || crossedLineStartXField.getText().toString().isEmpty() ){
+            Toast.makeText(this, "Keresztezett vonal kezdőpont X koordináta megadása szükséges.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        EditText crossedLineEndYField = container.findViewById(R.id.end_y_input_field);
+        if( crossedLineEndYField == null || crossedLineEndYField.getText().toString().isEmpty() ){
+            Toast.makeText(this, "Keresztezett vonal végpont Y koordináta megadása szükséges.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        EditText crossedLineEndXField = container.findViewById(R.id.end_x_input_field);
+        if( crossedLineEndXField == null || crossedLineEndXField.getText().toString().isEmpty() ){
+            Toast.makeText(this, "Keresztezett vonal végpont X koordináta megadása szükséges.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String mainLineStartY = mainLineStartYField.getText().toString().replace(",", ".");
+        String mainLineStartX = mainLineStartXField.getText().toString().replace(",", ".");
+        String mainLineEndY = mainLineEndYField.getText().toString().replace(",", ".");
+        String mainLineEndX = mainLineEndXField.getText().toString().replace(",", ".");
+        String crossedLineStartY = crossedLineStartYField.getText().toString().replace(",", ".");
+        String crossedLineStartX = crossedLineStartXField.getText().toString().replace(",", ".");
+        String crossedLineEndY = crossedLineEndYField.getText().toString().replace(",", ".");
+        String crossedLineEndX = crossedLineEndXField.getText().toString().replace(",", ".");
+        this.crossedLineStartY = mainLineStartY;
+        this.crossedLineStartX = mainLineStartX;
+        this.crossedLineEndY = mainLineEndY;
+        this.crossedLineEndX = mainLineEndX;
+        MainActivity.mainLineStartY = crossedLineStartY;
+        MainActivity.mainLineStartX = crossedLineStartX;
+        MainActivity.mainLineEndY = crossedLineEndY;
+        MainActivity.mainLineEndX = crossedLineEndX;
+        crossedLineStartYField.setText(this.crossedLineStartY);
+        crossedLineStartXField.setText(this.crossedLineStartX);
+        crossedLineEndYField.setText(this.crossedLineEndY);
+        crossedLineEndXField.setText(this.crossedLineEndX);
+        mainLineStartYField.setText(MainActivity.mainLineStartY);
+        mainLineStartXField.setText(MainActivity.mainLineStartX);
+        mainLineEndYField.setText(MainActivity.mainLineEndY);
+        mainLineEndXField.setText(MainActivity.mainLineEndX);
     }
 
     @Override

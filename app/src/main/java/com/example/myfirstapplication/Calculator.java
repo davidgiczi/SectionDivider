@@ -118,7 +118,7 @@ public class Calculator {
         double distance = calcDistance(startPoint, outsiderPoint);
         return "Vonalban: " + (Math.cos(alfa) > 0 ? "+" :  "")  +
                 String.format(Locale.getDefault(),"%.3fm",
-                 Math.cos( alfa) * distance)
+                 Math.cos(alfa) * distance)
                 .replace(",", ".");
     }
 

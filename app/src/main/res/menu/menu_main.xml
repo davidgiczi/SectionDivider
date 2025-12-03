@@ -2,14 +2,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.myfirstapplication.MainActivity">
+    <group android:id="@+id/calc_options">
     <item
         android:id="@+id/option_intersection"
         android:orderInCategory="100"
         android:title="@string/action_intersection"
         app:showAsAction="never" />
     <item
+        android:id="@+id/exchange_data"
+        android:orderInCategory="100"
+        android:title="@string/exchange_data"
+        app:showAsAction="never" />
+    </group>
+    <group android:id="@+id/exit">
+    <item
         android:id="@+id/option_exit"
         android:orderInCategory="100"
         android:title="@string/action_exit"
         app:showAsAction="never" />
+    </group>
 </menu>
