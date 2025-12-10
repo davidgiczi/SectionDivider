@@ -81,25 +81,29 @@ public class FirstFragment extends Fragment {
         binding.buttonFirst.setOnClickListener(view1 -> {
 
             Toast inputDataToast;
-            if(binding.startYInputField.getText().toString().isEmpty()){
+            String inputStartY = binding.startYInputField.getText().toString();
+            String inputStartX = binding.startXInputField.getText().toString();
+            String inputEndY = binding.endYInputField.getText().toString();
+            String inputEndX = binding.endXInputField.getText().toString();
+            if( inputStartY.isEmpty() || MainActivity.isInvalidInputChars(inputStartY) ){
                 inputDataToast = Toast.makeText(getContext(),
                         R.string.start_y_coord_field_is_empty_msg, Toast.LENGTH_LONG);
                 inputDataToast.show();
                 return;
             }
-            else if(binding.startXInputField.getText().toString().isEmpty()){
+            else if( inputStartX.isEmpty() || MainActivity.isInvalidInputChars(inputStartX) ){
                 inputDataToast = Toast.makeText(getContext(),
                         R.string.start_x_coord_field_is_empty_msg, Toast.LENGTH_LONG);
                 inputDataToast.show();
                 return;
             }
-            else if(binding.endYInputField.getText().toString().isEmpty()){
+            else if( inputEndY.isEmpty() || MainActivity.isInvalidInputChars(inputEndY) ){
                 inputDataToast = Toast.makeText(getContext(),
                         R.string.end_y_coord_field_is_empty_msg, Toast.LENGTH_LONG);
                 inputDataToast.show();
                 return;
             }
-            else if(binding.endXInputField.getText().toString().isEmpty()){
+            else if( inputEndX.isEmpty() || MainActivity.isInvalidInputChars(inputEndX) ){
                 inputDataToast = Toast.makeText(getContext(),
                         R.string.end_x_coord_field_is_empty_msg, Toast.LENGTH_LONG);
                 inputDataToast.show();
@@ -122,8 +126,10 @@ public class FirstFragment extends Fragment {
             int numberOfDividerPoints =
                     Integer.parseInt(binding.numberOfDividerPointsInputField.getText().toString());
             Calculator calc = new Calculator(startPoint,endPoint, numberOfDividerPoints);
-            if( !binding.outsideYField.getText().toString().isEmpty() &&
-                    !binding.outsideXField.getText().toString().isEmpty() ){
+            String outsidePointY = binding.outsideYField.getText().toString();
+            String outsidePointX = binding.outsideXField.getText().toString();
+            if( !outsidePointY.isEmpty() && !MainActivity.isInvalidInputChars(outsidePointY) &&
+                    !outsidePointX.isEmpty() && !MainActivity.isInvalidInputChars(outsidePointX) ){
                 outsiderPoint  = new Point("Outsider",
                         Double.parseDouble(binding.outsideYField.getText().toString().replace(",", ".")),
                         Double.parseDouble(binding.outsideXField.getText().toString().replace(",", ".")));

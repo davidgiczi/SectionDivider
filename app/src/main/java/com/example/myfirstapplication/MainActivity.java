@@ -29,6 +29,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.myfirstapplication.databinding.ActivityMainBinding;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private String crossedLineStartX;
     private String crossedLineEndY;
     private String crossedLineEndX;
+    private static final List<String> INVALID_INPUT_CHARS = Arrays.asList(" ", ".", ",", "-", ".-", "-.", ",-", "-," );
 
     @SuppressLint("InflateParams")
     @Override
@@ -55,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+    }
+    public static boolean isInvalidInputChars(String inputData){
+        if( inputData.length() == 1 && INVALID_INPUT_CHARS.contains(inputData) ){
+            return true;
+        }
+        else return inputData.length() == 2 && INVALID_INPUT_CHARS.contains(inputData);
     }
     private void exitAppDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -220,35 +230,35 @@ public class MainActivity extends AppCompatActivity {
             mainLineEndX = mainLineEndXField.getText().toString();
         }
 
-        if( mainLineStartY.trim().isEmpty() ){
+        if( mainLineStartY.trim().isEmpty() || MainActivity.isInvalidInputChars(mainLineStartY) ){
             Toast.makeText(this, "Az alapvonal kezdőpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( mainLineStartX.trim().isEmpty() ){
+        else if( mainLineStartX.trim().isEmpty() || MainActivity.isInvalidInputChars(mainLineStartX) ){
             Toast.makeText(this, "Az alapvonal kezdőpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( mainLineEndY.trim().isEmpty() ){
+        else if( mainLineEndY.trim().isEmpty() || MainActivity.isInvalidInputChars(mainLineEndY) ){
             Toast.makeText(this, "Az alapvonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( mainLineEndX.trim().isEmpty() && isAngle(mainLineEndY)){
+        else if( (mainLineEndX.trim().isEmpty() || MainActivity.isInvalidInputChars(mainLineEndX)) && isAngle(mainLineEndY)){
             Toast.makeText(this, "Az alapvonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( startY.trim().isEmpty() ){
+        else if( startY.trim().isEmpty() || MainActivity.isInvalidInputChars(startY.trim()) ){
             Toast.makeText(this, "A keresztezett vonal kezdőpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( startX.trim().isEmpty() ){
+        else if( startX.trim().isEmpty() || MainActivity.isInvalidInputChars(startX.trim())){
             Toast.makeText(this, "A keresztezett vonal kezdőpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( endY.trim().isEmpty() ){
+        else if( endY.trim().isEmpty() || MainActivity.isInvalidInputChars(endY.trim())){
             Toast.makeText(this, "A keresztezett vonal végpont Y koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( endX.trim().isEmpty() && isAngle(endY)){
+        else if( (endX.trim().isEmpty() || MainActivity.isInvalidInputChars(endX.trim())) && isAngle(endY)){
             Toast.makeText(this, "A keresztezett vonal végpont X koordinátájának megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
@@ -263,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Double isValidIntersectionByAnglesInputData(String angleValue){
 
-         if( angleValue.trim().isEmpty() ){
+         if( angleValue.trim().isEmpty() || isInvalidInputChars(angleValue.trim())){
              Toast.makeText(this, "Irányszög megadása szükséges.",
                      Toast.LENGTH_LONG).show();
             return null;
