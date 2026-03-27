@@ -9,7 +9,8 @@
     <string name="previous">Vissza</string>
     <string name="y_coordinate_text">Y=</string>
     <string name="x_coordinate_text">X=</string>
-    <string name="start_point_text">Kezdőpont:</string>
+    <string name="z_coordinate_text">M=</string>
+    <string name="start_point_text">Kezdőpont/Álláspont:</string>
     <string name="end_point_text">Végpont:</string>
     <string name="metric">m</string>
     <string name="pcs">db</string>

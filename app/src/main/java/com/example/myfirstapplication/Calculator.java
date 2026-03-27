@@ -15,6 +15,8 @@ public class Calculator {
     private final String distanceBetweenPoints;
     private final List<Point> resultPoints;
     private static final DecimalFormat df = new DecimalFormat("0.0");
+    public static String ELEVATION_FIRST;
+    public static String ELEVATION_SECOND;
 
 
     public Calculator(Point startPoint, Point endPoint, int numberOfDividerPoints) {
@@ -185,7 +187,9 @@ public class Calculator {
     }
 
     public static String calcIntersectionByAngles(Point firstPoint, Point secondPoint,
-                                                  Double firstAngle, Double secondAngle){
+                                                  Double firstAngle, Double secondAngle,
+                                                  Double firstVerticalAngle, Double secondVerticalAngle,
+                                                  Double firstElevation, Double secondElevation){
         Double firstPointAzimuth = calcAzimuth(firstPoint, secondPoint);
         if( firstPointAzimuth.isNaN() ){
             return null;
@@ -212,11 +216,19 @@ public class Calculator {
         if( pointFirst.getY_value() != pointSecond.getY_value() && pointFirst.getX_value() != pointSecond.getX_value()){
             return null;
         }
+        if( firstVerticalAngle != null && firstElevation != null ){
+            double correction = 0.87 * Math.pow(firstDistance, 2) / (2 * 6378000);
+            double elevationValue = firstElevation + firstDistance * Math.pow(Math.tan(firstVerticalAngle), -1) + correction;
+            ELEVATION_FIRST = String.format(Locale.getDefault(),"%.3f", elevationValue);
+        }
+        if( secondVerticalAngle != null && secondElevation != null ){
+            double correction = 0.87 * Math.pow(secondDistance, 2) / (2 * 6378000);
+            double elevationValue = secondElevation + secondDistance * Math.pow(Math.tan(secondVerticalAngle), -1) + correction;
+            ELEVATION_SECOND = String.format(Locale.getDefault(),"%.3f", elevationValue);
+        }
         return String.format(Locale.getDefault(),"%13.3f",
                 (pointFirst.getY_value() + pointSecond.getY_value()) / 2) +
                 String.format(Locale.getDefault(),"%13.3f",
                         (pointFirst.getX_value() + pointSecond.getX_value()) / 2);
     }
-
-
 }

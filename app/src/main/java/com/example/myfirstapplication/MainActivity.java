@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,10 +39,12 @@ public class MainActivity extends AppCompatActivity {
     public ViewGroup container;
     public static String mainLineStartY;
     public static String mainLineStartX;
+    public static String mainLineStartZ;
     public static String mainLineEndY;
     public static String mainLineEndX;
     private String crossedLineStartY;
     private String crossedLineStartX;
+    private String crossedLineStartZ;
     private String crossedLineEndY;
     private String crossedLineEndX;
     private static final List<String> INVALID_INPUT_CHARS = Arrays.asList(" ", ".", ",", "-", ".-", "-.", ",-", "-," );
@@ -92,6 +93,15 @@ public class MainActivity extends AppCompatActivity {
         EditText endYField = container.findViewById(R.id.end_y_input_field);
         EditText endXField = container.findViewById(R.id.end_x_input_field);
         ((TextView) container.findViewById(R.id.intersection_point_data)).setText(null);
+        EditText firstElevationField = binding.getRoot().findViewById(R.id.outside_y_field);
+        if( firstElevationField != null ){
+            firstElevationField.setText(null);
+        }
+        EditText secondElevationField = binding.getRoot().findViewById(R.id.outside_x_field);
+        if( secondElevationField != null ){
+            secondElevationField.setText(null);
+        }
+        setInputData();
         startYField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -144,15 +154,13 @@ public class MainActivity extends AppCompatActivity {
         Button calcButton = container.findViewById(R.id.button_calc);
         calcButton.setOnClickListener(d -> {
 
-            crossedLineStartY = startYField.getText().toString();
-            crossedLineStartX = startXField.getText().toString();
-            crossedLineEndY = endYField.getText().toString();
-            crossedLineEndX = endXField.getText().toString();
-
-            EditText mainLineEndYField = binding.getRoot().findViewById(R.id.end_y_input_field);
-            Double firstAngle = isValidIntersectionByAnglesInputData(mainLineEndY == null ?
-            mainLineEndYField.getText().toString() : mainLineEndY);
+            setInputData();
+            Double firstAngle = isValidIntersectionByAnglesInputData(mainLineEndY);
             Double secondAngle = isValidIntersectionByAnglesInputData(crossedLineEndY);
+            Double firstVerticalAngle = isValidVerticalAngleInputData(mainLineEndX);
+            Double secondVerticalAngle = isValidVerticalAngleInputData(crossedLineEndX);
+            Double firstElevation = isValidElevationInputData(mainLineStartZ);
+            Double secondElevation = isValidElevationInputData(crossedLineStartZ);
 
             if( firstAngle != null && secondAngle != null &&
                     isValidCrossedLinesInputData(crossedLineStartY, crossedLineStartX, crossedLineEndY, crossedLineEndX) ){
@@ -164,7 +172,8 @@ public class MainActivity extends AppCompatActivity {
                         new Point("CrossedStartPoint",
                                 Double.parseDouble(crossedLineStartY.replace(",", ".")),
                                 Double.parseDouble(crossedLineStartX.replace(",", "."))),
-                        firstAngle, secondAngle);
+                        firstAngle, secondAngle,
+                        firstVerticalAngle, secondVerticalAngle, firstElevation, secondElevation);
                 if( intersectionPointByAngles == null ){
                     TextView errorText = container.findViewById(R.id.intersection_point_data);
                     errorText.setTextColor(Color.RED);
@@ -176,8 +185,21 @@ public class MainActivity extends AppCompatActivity {
                     resultPointData.setText(intersectionPointByAngles);
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     clipboard.setPrimaryClip(ClipData.newPlainText("Copied Data", resultPointData.getText()));
+                    if( Calculator.ELEVATION_FIRST == null ){
+                        return;
+                    }
+                    if( firstElevationField != null ){
+                        firstElevationField.setText(Calculator.ELEVATION_FIRST);
+                    }
+                    Calculator.ELEVATION_FIRST = null;
+                    if( Calculator.ELEVATION_SECOND == null ){
+                        return;
+                    }
+                    if( secondElevationField != null ){
+                        secondElevationField.setText(Calculator.ELEVATION_SECOND);
+                    }
+                    Calculator.ELEVATION_SECOND = null;
                 }
-
             }
             else if( isValidCrossedLinesInputData(crossedLineStartY, crossedLineStartX, crossedLineEndY, crossedLineEndX) &&
                     isAngle(mainLineEndY) && isAngle(crossedLineEndY)){
@@ -321,10 +343,63 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             return null;
         }
-            Log.d("angle", ": " + angle);
-            Log.d("min", ": " + min);
-            Log.d("sec", ": " + sec);
+
         return angle + min / 60.0 + sec / 3600.0;
+    }
+
+    private Double isValidVerticalAngleInputData(String angleValue){
+
+        if( angleValue.trim().isEmpty() || isInvalidInputChars(angleValue.trim())){
+            return null;
+        }
+        else if( !angleValue.trim().startsWith(".") && !angleValue.trim().startsWith(",") ){
+            return null;
+        }
+        else if( 6 > angleValue.length() || 8 < angleValue.length() ){
+            return null;
+        }
+        int angle = 0;
+        int min = 0;
+        int sec = 0;
+        switch (angleValue.length() ){
+            case 6 :
+                angle = Integer.parseInt(angleValue.substring(1,2));
+                min = Integer.parseInt(angleValue.substring(2,4));
+                sec = Integer.parseInt(angleValue.substring(4));
+                break;
+            case 7 :
+                angle = Integer.parseInt(angleValue.substring(1,3));
+                min = Integer.parseInt(angleValue.substring(3,5));
+                sec = Integer.parseInt(angleValue.substring(5));
+                break;
+            case 8 :
+                angle = Integer.parseInt(angleValue.substring(1,4));
+                min = Integer.parseInt(angleValue.substring(4,6));
+                sec = Integer.parseInt(angleValue.substring(6));
+        }
+
+        if( angle > 179 || angle < 0){
+            return null;
+        }
+        else if( min > 59 || min < 0){
+            return null;
+        }
+        else if( sec > 59 || sec < 0){
+            return null;
+        }
+
+        return Math.toRadians(angle + min / 60.0 + sec / 3600.0);
+    }
+
+    private Double isValidElevationInputData(String inputElevation){
+        Double elevation = null;
+        try{
+            elevation = Double.parseDouble(inputElevation);
+        }
+        catch (NumberFormatException ignored){
+
+        }
+        return elevation;
     }
 
     @Override
@@ -401,6 +476,12 @@ public class MainActivity extends AppCompatActivity {
         }
         String mainLineStartY = mainLineStartYField.getText().toString().replace(",", ".");
         String mainLineStartX = mainLineStartXField.getText().toString().replace(",", ".");
+        EditText firstElevationField = binding.getRoot().findViewById(R.id.start_z_input_field);
+        String firstElevation = firstElevationField.getText().toString().replace("," , ".");
+        EditText secondElevationField = container.findViewById(R.id.start_z_input_field);
+        String secondElevation = secondElevationField.getText().toString().replace(",", ".");
+        secondElevationField.setText(firstElevation);
+        firstElevationField.setText(secondElevation);
         String mainLineEndY = mainLineEndYField.getText().toString().replace(",", ".");
         String mainLineEndX = mainLineEndXField.getText().toString().replace(",", ".");
         String crossedLineStartY = crossedLineStartYField.getText().toString().replace(",", ".");
@@ -423,6 +504,39 @@ public class MainActivity extends AppCompatActivity {
         mainLineStartXField.setText(MainActivity.mainLineStartX);
         mainLineEndYField.setText(MainActivity.mainLineEndY);
         mainLineEndXField.setText(MainActivity.mainLineEndX);
+    }
+
+    private void setInputData(){
+        EditText mainLineStartYField = binding.getRoot().findViewById(R.id.start_y_input_field);
+        if( mainLineStartYField != null ){
+            MainActivity.mainLineStartY = mainLineStartYField.getText().toString().replace(",", ".");
+        }
+        EditText mainLineStartXField = binding.getRoot().findViewById(R.id.start_x_input_field);
+        if( mainLineStartXField != null ){
+            MainActivity.mainLineStartX = mainLineStartXField.getText().toString().replace(",", ".");
+        }
+        EditText mainLineStartZField = binding.getRoot().findViewById(R.id.start_z_input_field);
+        if( mainLineStartZField != null ){
+            MainActivity.mainLineStartZ = mainLineStartZField.getText().toString().replace(",", ".");
+        }
+        EditText mainLineEndYField = binding.getRoot().findViewById(R.id.end_y_input_field);
+        if( mainLineEndYField != null ){
+            MainActivity.mainLineEndY = mainLineEndYField.getText().toString().replace(",", ".");
+        }
+        EditText mainLineEndXField =  binding.getRoot().findViewById(R.id.end_x_input_field);
+        if( mainLineEndXField != null ) {
+            MainActivity.mainLineEndX = mainLineEndXField.getText().toString().replace(",", ".");
+        }
+        this.crossedLineStartY = ((EditText) container
+                .findViewById(R.id.start_y_input_field)).getText().toString().replace(",", ".");
+        this.crossedLineStartX = ((EditText) container
+                .findViewById(R.id.start_x_input_field)).getText().toString().replace(",", ".");
+        this.crossedLineStartZ = ((EditText) container
+                .findViewById(R.id.start_z_input_field)).getText().toString().replace(",", ".");
+        this.crossedLineEndY = ((EditText) container
+                .findViewById(R.id.end_y_input_field)).getText().toString().replace(",", ".");
+        this.crossedLineEndX = ((EditText) container
+                .findViewById(R.id.end_x_input_field)).getText().toString().replace(",", ".");
     }
 
     @Override
