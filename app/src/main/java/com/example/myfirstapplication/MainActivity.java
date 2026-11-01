@@ -394,7 +394,9 @@ public class MainActivity extends AppCompatActivity {
     private Double isValidElevationInputData(String inputElevation){
         Double elevation = null;
         try{
-            elevation = Double.parseDouble(inputElevation);
+            if( inputElevation != null ) {
+                elevation = Double.parseDouble(inputElevation);
+            }
         }
         catch (NumberFormatException ignored){
 
